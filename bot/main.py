@@ -1,10 +1,10 @@
 """机器人入口 — 官方QQ机器人SDK (qq-botpy) WebSocket模式"""
 import asyncio
 import logging
+import os
 import qqbot
 from qqbot.model.message import MessageEmbed, MessageMarkdown, MessageMarkdownParams
 from qqbot.model.message import MessageAttachment
-from bot.config import QQ_APPID, QQ_SECRET, QQ_TOKEN
 from bot.handler import handle_message
 from core.database import init_db
 
@@ -12,14 +12,17 @@ from core.database import init_db
 logging.basicConfig(level=logging.INFO, format="[%(asctime)s] %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
-# QQ机器人实例
-bot = qqbot.BotAPI(qqbot.Token(QQ_APPID, QQ_SECRET, QQ_TOKEN))
+# QQ开放平台配置
+QQ_APPID = os.getenv("QQ_APPID", "")
+QQ_SECRET = os.getenv("QQ_SECRET", "")
+QQ_TOKEN = os.getenv("QQ_TOKEN", "")
 
 
 async def send_group_msg(group_id: str, content: str):
     """发送群文本消息"""
     try:
-        await bot.post_group_message(int(group_id), content)
+        api = qqbot.BotAPI(qqbot.Token(QQ_APPID, QQ_SECRET, QQ_TOKEN))
+        await api.post_group_message(int(group_id), content)
         logger.info(f"已发送文本消息到群 {group_id}")
     except Exception as e:
         logger.error(f"发送文本消息失败: {e}")
@@ -39,8 +42,8 @@ async def send_group_image(group_id: str, image_path: str):
         with open(img_file, "rb") as f:
             img_data = base64.b64encode(f.read()).decode()
 
-        # 使用官方SDK发送图片
-        await bot.post_group_message(int(group_id), image=img_data)
+        api = qqbot.BotAPI(qqbot.Token(QQ_APPID, QQ_SECRET, QQ_TOKEN))
+        await api.post_group_message(int(group_id), image=img_data)
         logger.info(f"已发送图片到群 {group_id}: {image_path}")
     except Exception as e:
         logger.error(f"发送图片失败: {e}")
@@ -57,7 +60,8 @@ async def send_group_markdown(group_id: str, markdown_content: str, params: list
         else:
             md = MessageMarkdown(content=markdown_content)
 
-        await bot.post_group_message(int(group_id), markdown=md)
+        api = qqbot.BotAPI(qqbot.Token(QQ_APPID, QQ_SECRET, QQ_TOKEN))
+        await api.post_group_message(int(group_id), markdown=md)
         logger.info(f"已发送Markdown消息到群 {group_id}")
     except Exception as e:
         logger.error(f"发送Markdown消息失败: {e}")
@@ -121,7 +125,6 @@ async def main():
     )
 
     # WebSocket模式连接
-    # 会自动连接QQ服务器并保持长连接
     ws_client = qqbot.WebSocketClient(
         token=qqbot.Token(QQ_APPID, QQ_SECRET, QQ_TOKEN),
         event_handler=event_handler,
