@@ -2,7 +2,6 @@
 import asyncio
 import logging
 import os
-import sys
 
 # 配置日志
 logging.basicConfig(level=logging.INFO, format="[%(asctime)s] %(levelname)s: %(message)s")
@@ -17,7 +16,8 @@ QQ_TOKEN = os.getenv("QQ_TOKEN", "")
 async def send_group_msg(group_id: str, content: str):
     """发送群文本消息"""
     try:
-        from qqbot import BotAPI, Token
+        import botpy
+        from botpy import BotAPI, Token
         api = BotAPI(Token(QQ_APPID, QQ_SECRET, QQ_TOKEN))
         await api.post_group_message(int(group_id), content)
         logger.info(f"已发送文本消息到群 {group_id}")
@@ -30,7 +30,8 @@ async def send_group_image(group_id: str, image_path: str):
     try:
         import base64
         from pathlib import Path
-        from qqbot import BotAPI, Token
+        import botpy
+        from botpy import BotAPI, Token
 
         img_file = Path(image_path)
         if not img_file.exists():
@@ -50,8 +51,9 @@ async def send_group_image(group_id: str, image_path: str):
 async def send_group_markdown(group_id: str, markdown_content: str, params: list = None):
     """发送群Markdown消息"""
     try:
-        from qqbot import BotAPI, Token
-        from qqbot.model.message import MessageMarkdown, MessageMarkdownParams
+        import botpy
+        from botpy import BotAPI, Token
+        from botpy.message import MessageMarkdown, MessageMarkdownParams
 
         if params:
             md = MessageMarkdown(
@@ -116,7 +118,8 @@ async def on_ready(ws):
 
 async def main():
     """主函数 — WebSocket模式"""
-    from qqbot import Handler, MessageEvent, WebSocketClient, Token
+    import botpy
+    from botpy import Client, Intents
     from core.database import init_db
 
     logger.info("正在初始化数据库...")
@@ -124,21 +127,27 @@ async def main():
 
     logger.info(f"正在启动QQ机器人 WebSocket模式 (AppID: {QQ_APPID})...")
 
-    # 创建事件处理器
-    event_handler = Handler(
-        MessageEvent,
-        on_message_create
+    # 创建机器人客户端
+    intents = Intents(
+        public_guild_messages=True,
+        guild_messages=True
     )
 
-    # WebSocket模式连接
-    ws_client = WebSocketClient(
-        token=Token(QQ_APPID, QQ_SECRET, QQ_TOKEN),
-        event_handler=event_handler,
-        on_ready=on_ready
+    client = botpy.Client(
+        intents=intents,
+        is_sandbox=False
     )
+
+    @client.event
+    async def on_ready():
+        logger.info("WebSocket连接成功，机器人已在线")
+
+    @client.event
+    async def on_message_create(event):
+        await handle_group_message(event)
 
     logger.info("正在连接QQ服务器...")
-    await ws_client.start()
+    await client.run(QQ_APPID, QQ_SECRET)
 
 
 if __name__ == "__main__":
