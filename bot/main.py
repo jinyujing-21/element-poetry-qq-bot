@@ -2,11 +2,7 @@
 import asyncio
 import logging
 import os
-import qqbot
-from qqbot.model.message import MessageEmbed, MessageMarkdown, MessageMarkdownParams
-from qqbot.model.message import MessageAttachment
-from bot.handler import handle_message
-from core.database import init_db
+import sys
 
 # 配置日志
 logging.basicConfig(level=logging.INFO, format="[%(asctime)s] %(levelname)s: %(message)s")
@@ -21,7 +17,8 @@ QQ_TOKEN = os.getenv("QQ_TOKEN", "")
 async def send_group_msg(group_id: str, content: str):
     """发送群文本消息"""
     try:
-        api = qqbot.BotAPI(qqbot.Token(QQ_APPID, QQ_SECRET, QQ_TOKEN))
+        from qqbot import BotAPI, Token
+        api = BotAPI(Token(QQ_APPID, QQ_SECRET, QQ_TOKEN))
         await api.post_group_message(int(group_id), content)
         logger.info(f"已发送文本消息到群 {group_id}")
     except Exception as e:
@@ -33,6 +30,7 @@ async def send_group_image(group_id: str, image_path: str):
     try:
         import base64
         from pathlib import Path
+        from qqbot import BotAPI, Token
 
         img_file = Path(image_path)
         if not img_file.exists():
@@ -42,7 +40,7 @@ async def send_group_image(group_id: str, image_path: str):
         with open(img_file, "rb") as f:
             img_data = base64.b64encode(f.read()).decode()
 
-        api = qqbot.BotAPI(qqbot.Token(QQ_APPID, QQ_SECRET, QQ_TOKEN))
+        api = BotAPI(Token(QQ_APPID, QQ_SECRET, QQ_TOKEN))
         await api.post_group_message(int(group_id), image=img_data)
         logger.info(f"已发送图片到群 {group_id}: {image_path}")
     except Exception as e:
@@ -52,6 +50,9 @@ async def send_group_image(group_id: str, image_path: str):
 async def send_group_markdown(group_id: str, markdown_content: str, params: list = None):
     """发送群Markdown消息"""
     try:
+        from qqbot import BotAPI, Token
+        from qqbot.model.message import MessageMarkdown, MessageMarkdownParams
+
         if params:
             md = MessageMarkdown(
                 custom_template_id="",
@@ -60,7 +61,7 @@ async def send_group_markdown(group_id: str, markdown_content: str, params: list
         else:
             md = MessageMarkdown(content=markdown_content)
 
-        api = qqbot.BotAPI(qqbot.Token(QQ_APPID, QQ_SECRET, QQ_TOKEN))
+        api = BotAPI(Token(QQ_APPID, QQ_SECRET, QQ_TOKEN))
         await api.post_group_message(int(group_id), markdown=md)
         logger.info(f"已发送Markdown消息到群 {group_id}")
     except Exception as e:
@@ -77,6 +78,8 @@ def extract_message(message) -> str | None:
 async def handle_group_message(event):
     """处理群消息事件"""
     try:
+        from bot.handler import handle_message
+
         text = extract_message(event.message)
         if not text:
             return
@@ -113,20 +116,23 @@ async def on_ready(ws):
 
 async def main():
     """主函数 — WebSocket模式"""
+    from qqbot import Handler, MessageEvent, WebSocketClient, Token
+    from core.database import init_db
+
     logger.info("正在初始化数据库...")
     init_db()
 
     logger.info(f"正在启动QQ机器人 WebSocket模式 (AppID: {QQ_APPID})...")
 
     # 创建事件处理器
-    event_handler = qqbot.Handler(
-        qqbot.MessageEvent,
+    event_handler = Handler(
+        MessageEvent,
         on_message_create
     )
 
     # WebSocket模式连接
-    ws_client = qqbot.WebSocketClient(
-        token=qqbot.Token(QQ_APPID, QQ_SECRET, QQ_TOKEN),
+    ws_client = WebSocketClient(
+        token=Token(QQ_APPID, QQ_SECRET, QQ_TOKEN),
         event_handler=event_handler,
         on_ready=on_ready
     )
