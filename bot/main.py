@@ -112,10 +112,9 @@ async def main():
 
     logger.info(f"正在启动QQ机器人 WebSocket模式 (AppID: {QQ_APPID})...")
 
-    # 创建机器人客户端
+    # 创建机器人客户端 - 使用public_messages接收QQ群消息
     intents = Intents(
-        public_guild_messages=True,
-        guild_messages=True
+        public_messages=True
     )
 
     client = ElementPoetryBot(
