@@ -124,7 +124,8 @@ async def main():
     )
 
     logger.info("正在连接QQ服务器...")
-    await client.run(QQ_APPID, QQ_SECRET)
+    async with client:
+        await client.start(QQ_APPID, QQ_SECRET)
 
 
 if __name__ == "__main__":
