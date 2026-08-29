@@ -2,6 +2,8 @@
 import asyncio
 import logging
 import os
+import botpy
+from botpy import Intents
 
 # 配置日志
 logging.basicConfig(level=logging.INFO, format="[%(asctime)s] %(levelname)s: %(message)s")
@@ -103,8 +105,6 @@ class ElementPoetryBot(botpy.Client):
 
 async def main():
     """主函数 — WebSocket模式"""
-    import botpy
-    from botpy import Intents
     from core.database import init_db
 
     logger.info("正在初始化数据库...")
