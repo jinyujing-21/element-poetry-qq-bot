@@ -1,10 +1,10 @@
-"""机器人入口 — 官方QQ机器人SDK (qq-botpy)"""
+"""机器人入口 — 官方QQ机器人SDK (qq-botpy) WebSocket模式"""
 import asyncio
 import logging
 import qqbot
 from qqbot.model.message import MessageEmbed, MessageMarkdown, MessageMarkdownParams
 from qqbot.model.message import MessageAttachment
-from bot.config import QQ_APPID, QQ_SECRET, QQ_TOKEN, SERVER_HOST, SERVER_PORT
+from bot.config import QQ_APPID, QQ_SECRET, QQ_TOKEN
 from bot.handler import handle_message
 from core.database import init_db
 
@@ -102,30 +102,34 @@ async def on_message_create(event):
     await handle_group_message(event)
 
 
+async def on_ready(ws):
+    """WebSocket连接成功回调"""
+    logger.info("WebSocket连接成功，机器人已在线")
+
+
 async def main():
-    """主函数"""
+    """主函数 — WebSocket模式"""
     logger.info("正在初始化数据库...")
     init_db()
 
-    logger.info(f"正在启动QQ机器人 (AppID: {QQ_APPID})...")
+    logger.info(f"正在启动QQ机器人 WebSocket模式 (AppID: {QQ_APPID})...")
 
-    # 注册事件处理器
-    qqbot_handler = qqbot.Handler(
+    # 创建事件处理器
+    event_handler = qqbot.Handler(
         qqbot.MessageEvent,
         on_message_create
     )
 
-    # 启动机器人
-    qqbot_handler.start_handler()
+    # WebSocket模式连接
+    # 会自动连接QQ服务器并保持长连接
+    ws_client = qqbot.WebSocketClient(
+        token=qqbot.Token(QQ_APPID, QQ_SECRET, QQ_TOKEN),
+        event_handler=event_handler,
+        on_ready=on_ready
+    )
 
-    logger.info(f"机器人已启动，监听Webhook: {SERVER_HOST}:{SERVER_PORT}")
-
-    # 保持运行
-    try:
-        while True:
-            await asyncio.sleep(1)
-    except KeyboardInterrupt:
-        logger.info("机器人已停止")
+    logger.info("正在连接QQ服务器...")
+    await ws_client.start()
 
 
 if __name__ == "__main__":
