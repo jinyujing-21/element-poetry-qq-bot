@@ -104,7 +104,7 @@ class ElementPoetryBot(botpy.Client):
 
 
 async def main():
-    """主函数 — WebSocket模式"""
+    """主函数 — WebSocket模式，带自动重连"""
     from core.database import init_db
 
     logger.info("正在初始化数据库...")
@@ -117,14 +117,27 @@ async def main():
         public_messages=True
     )
 
-    client = ElementPoetryBot(
-        intents=intents,
-        is_sandbox=False
-    )
+    # 自动重连逻辑
+    max_retries = 10
+    retry_count = 0
 
-    logger.info("正在连接QQ服务器...")
-    async with client:
-        await client.start(QQ_APPID, QQ_SECRET)
+    while retry_count < max_retries:
+        try:
+            client = ElementPoetryBot(
+                intents=intents,
+                is_sandbox=False
+            )
+
+            logger.info(f"正在连接QQ服务器... (第{retry_count + 1}次)")
+            async with client:
+                await client.start(QQ_APPID, QQ_SECRET)
+
+        except Exception as e:
+            retry_count += 1
+            logger.error(f"连接异常: {e}，{5}秒后重试... ({retry_count}/{max_retries})")
+            await asyncio.sleep(5)
+
+    logger.error("已达最大重试次数，机器人停止")
 
 
 if __name__ == "__main__":
