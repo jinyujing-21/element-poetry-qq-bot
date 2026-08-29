@@ -1,0 +1,9 @@
+[
+  {"alias": "岩峰龙", "standard_name": "岩峰龙-本体", "module": "boss", "priority": 1},
+  {"alias": "螃蟹", "standard_name": "阿兰德红蟹", "module": "boss", "priority": 0},
+  {"alias": "王八", "standard_name": "王八副本", "module": "dungeon", "priority": 1},
+  {"alias": "霾火", "standard_name": "噩梦火之试炼", "module": "dungeon", "priority": 1},
+  {"alias": "霾梦", "standard_name": "噩梦之境", "module": "dungeon", "priority": 1},
+  {"alias": "天灾武器", "standard_name": "天灾主手", "module": "forge", "priority": 0},
+  {"alias": "气刃", "standard_name": "气刃飞断", "module": "seal", "priority": 0}
+]

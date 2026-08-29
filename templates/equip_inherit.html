@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>装备继承关系图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Microsoft YaHei', '微软雅黑', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .flow-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+        .tier {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        .equip-node {
+            background: linear-gradient(145deg, #2d2d44 0%, #1a1a2e 100%);
+            border: 2px solid #4a4a6a;
+            border-radius: 12px;
+            padding: 15px 25px;
+            text-align: center;
+            min-width: 120px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .equip-node:hover {
+            transform: translateY(-5px);
+            border-color: #ffd700;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+        }
+        .equip-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+        .equip-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        .arrow-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+        .arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #888;
+            font-size: 12px;
+        }
+        .arrow-line {
+            width: 2px;
+            height: 30px;
+            background: linear-gradient(to bottom, #4a4a6a, #ffd700);
+            position: relative;
+        }
+        .arrow-line::after {
+            content: '▼';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffd700;
+            font-size: 14px;
+        }
+        .arrow-label {
+            margin-top: 8px;
+            color: #aaa;
+            text-align: center;
+            max-width: 150px;
+        }
+        .arrow-material {
+            color: #ffd700;
+            font-weight: bold;
+        }
+        .arrow-level {
+            color: #ff6b6b;
+        }
+        .legend {
+            margin-top: 30px;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            font-size: 13px;
+            color: #aaa;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 5px 0;
+        }
+        .legend-color {
+            width: 20px;
+            height: 3px;
+        }
+        .legend-color.perfect { background: #4CAF50; }
+        .legend-color.minor { background: #ff9800; }
+        .legend-color.major { background: #f44336; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚔️ 装备继承关系图</h1>
+        <p class="subtitle">消耗对应「熔炉之魂」可将装备强化等级进行继承</p>
+
+        <div class="flow-chart">
+            <!-- 第一层：海妖 -->
+            <div class="tier">
+                <div class="equip-node">
+                    <div class="equip-icon">🐉</div>
+                    <div class="equip-name">海妖套装</div>
+                </div>
+            </div>
+
+            <div class="arrow-container">
+                <div class="arrow">
+                    <div class="arrow-line"></div>
+                    <div class="arrow-label">
+                        <span class="arrow-material">黑钢·熔炉之魂</span><br>
+                        <span class="arrow-level">完美继承</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第二层：黑钢 -->
+            <div class="tier">
+                <div class="equip-node">
+                    <div class="equip-icon">⚔️</div>
+                    <div class="equip-name">黑钢套装</div>
+                </div>
+            </div>
+
+            <div class="arrow-container">
+                <div class="arrow">
+                    <div class="arrow-line"></div>
+                    <div class="arrow-label">
+                        <span class="arrow-material">焱祭·熔炉之魂</span><br>
+                        <span class="arrow-level">等级-5</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第三层：焱祭 -->
+            <div class="tier">
+                <div class="equip-node">
+                    <div class="equip-icon">🔥</div>
+                    <div class="equip-name">焱祭套装</div>
+                </div>
+            </div>
+
+            <div class="arrow-container">
+                <div class="arrow">
+                    <div class="arrow-line"></div>
+                    <div class="arrow-label">
+                        <span class="arrow-material">骸骨·熔炉之魂</span><br>
+                        <span class="arrow-level">等级-2</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第四层：骸骨 -->
+            <div class="tier">
+                <div class="equip-node">
+                    <div class="equip-icon">💀</div>
+                    <div class="equip-name">骸骨套装</div>
+                </div>
+            </div>
+
+            <div class="arrow-container">
+                <div class="arrow">
+                    <div class="arrow-line"></div>
+                    <div class="arrow-label">
+                        <span class="arrow-material">劫影·熔炉之魂</span><br>
+                        <span class="arrow-level">等级-5</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第五层：劫影 -->
+            <div class="tier">
+                <div class="equip-node">
+                    <div class="equip-icon">👤</div>
+                    <div class="equip-name">劫影套装</div>
+                </div>
+            </div>
+
+            <div class="arrow-container">
+                <div class="arrow">
+                    <div class="arrow-line"></div>
+                    <div class="arrow-label">
+                        <span class="arrow-material">罗刹·熔炉之魂</span><br>
+                        <span class="arrow-level">等级-5</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第六层：罗刹 -->
+            <div class="tier">
+                <div class="equip-node">
+                    <div class="equip-icon">👹</div>
+                    <div class="equip-name">罗刹套装</div>
+                </div>
+            </div>
+
+            <div class="arrow-container">
+                <div class="arrow">
+                    <div class="arrow-line"></div>
+                    <div class="arrow-label">
+                        <span class="arrow-material">古藤·熔炉之魂</span><br>
+                        <span class="arrow-level">等级-5</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第七层：古藤 -->
+            <div class="tier">
+                <div class="equip-node">
+                    <div class="equip-icon">🌿</div>
+                    <div class="equip-name">古藤套装</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 血源和缚灵分支 -->
+        <div style="margin-top: 40px;">
+            <h2 style="text-align: center; font-size: 20px; margin-bottom: 20px; color: #ff6b6b;">🔴 血源 & 缚灵 分支</h2>
+            <div class="flow-chart">
+                <div class="tier">
+                    <div class="equip-node">
+                        <div class="equip-icon">🔥</div>
+                        <div class="equip-name">焱祭套装</div>
+                    </div>
+                    <div class="equip-node">
+                        <div class="equip-icon">💀</div>
+                        <div class="equip-name">骸骨套装</div>
+                    </div>
+                </div>
+
+                <div class="arrow-container">
+                    <div class="arrow">
+                        <div class="arrow-line"></div>
+                        <div class="arrow-label">
+                            <span class="arrow-material">血源·熔炉之魂</span><br>
+                            <span class="arrow-level">等级-2</span>
+                        </div>
+                    </div>
+                    <div class="arrow">
+                        <div class="arrow-line"></div>
+                        <div class="arrow-label">
+                            <span class="arrow-material">血源·熔炉之魂</span><br>
+                            <span class="arrow-level">等级-3</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tier">
+                    <div class="equip-node">
+                        <div class="equip-icon">🩸</div>
+                        <div class="equip-name">血源套装</div>
+                    </div>
+                </div>
+
+                <div class="arrow-container">
+                    <div class="arrow">
+                        <div class="arrow-line"></div>
+                        <div class="arrow-label">
+                            <span class="arrow-material">罗刹·熔炉之魂</span><br>
+                            <span class="arrow-level">等级-6</span>
+                        </div>
+                    </div>
+                    <div class="arrow">
+                        <div class="arrow-line"></div>
+                        <div class="arrow-label">
+                            <span class="arrow-material">缚灵·熔炉之魂</span><br>
+                            <span class="arrow-level">等级-3</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tier">
+                    <div class="equip-node">
+                        <div class="equip-icon">👹</div>
+                        <div class="equip-name">罗刹套装</div>
+                    </div>
+                    <div class="equip-node">
+                        <div class="equip-icon">👻</div>
+                        <div class="equip-name">缚灵套装</div>
+                    </div>
+                </div>
+
+                <div class="arrow-container">
+                    <div class="arrow">
+                        <div class="arrow-line"></div>
+                        <div class="arrow-label">
+                            <span class="arrow-material">古藤·熔炉之魂</span><br>
+                            <span class="arrow-level">等级-5</span>
+                        </div>
+                    </div>
+                    <div class="arrow">
+                        <div class="arrow-line"></div>
+                        <div class="arrow-label">
+                            <span class="arrow-material">古藤·熔炉之魂</span><br>
+                            <span class="arrow-level">等级-6</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tier">
+                    <div class="equip-node">
+                        <div class="equip-icon">🌿</div>
+                        <div class="equip-name">古藤套装</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color perfect"></div>
+                <span>完美继承：保持原强化等级不变</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color minor"></div>
+                <span>轻度损失：继承后等级降低2-3级</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color major"></div>
+                <span>重度损失：继承后等级降低5-6级</span>
+            </div>
+            <p style="margin-top: 10px; color: #ff9800;">⚠️ 注意：品质及宝石不会继承，请谨慎选择！</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  bot:
+    build: .
+    container_name: element-poetry-bot-official
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - QQ_APPID=${QQ_APPID}
+      - QQ_SECRET=${QQ_SECRET}
+      - QQ_TOKEN=${QQ_TOKEN}
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8080
+      - ADMIN_QQS=${ADMIN_QQS:-}
+    volumes:
+      - ./data:/app/data
+      - ./output:/app/output

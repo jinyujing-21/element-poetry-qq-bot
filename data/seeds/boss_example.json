@@ -1,0 +1,40 @@
+[
+  {
+    "name": "岩峰龙-本体",
+    "dungeon": "岩峰龙副本",
+    "difficulty": "普通",
+    "stage": "本体",
+    "phys_reduce": "70%",
+    "magic_reduce": "70%",
+    "fire_res": 80,
+    "light_res": 80,
+    "thunder_res": 150,
+    "water_res": 150,
+    "wind_res": 150,
+    "attack_element": "风",
+    "is_broken": 0,
+    "is_estimated": 0,
+    "source": "人工整理",
+    "version_date": "2026-08",
+    "notes": ""
+  },
+  {
+    "name": "阿兰德红蟹",
+    "dungeon": "螃蟹副本",
+    "difficulty": "普通",
+    "stage": "本体",
+    "phys_reduce": "50%",
+    "magic_reduce": "60%",
+    "fire_res": 120,
+    "light_res": 100,
+    "thunder_res": 100,
+    "water_res": 50,
+    "wind_res": 100,
+    "attack_element": "水",
+    "is_broken": 0,
+    "is_estimated": 0,
+    "source": "人工整理",
+    "version_date": "2026-08",
+    "notes": "水抗低，火抗高"
+  }
+]
